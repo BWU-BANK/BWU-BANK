@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - BWU-BANK</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  
+  <!-- jsPDF for Statements -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="brand-section">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M4 10H6V17H4V10ZM10 10H14V17H10V10ZM2 19H22V21H2V19ZM18 10H20V17H18V10ZM12 2L2 7V9H22V7L12 2Z"></path>
+        </svg>
+        <h3>BWU-BANK</h3>
+      </div>
+      <div class="user-section" onclick="toggleDropdown(event)">
+        <div class="avatar">JD</div>
+        <span class="text-secondary hide-mobile">John Doe</span>
+        <!-- Dropdown Menu -->
+        <div class="user-dropdown-menu" id="userMenu">
+          <div class="dropdown-item">Acc: <span id="navAccNumber" style="color:var(--text-primary); font-weight:bold;">ACC---</span></div>
+          <div class="dropdown-item" onclick="openModal('updatePinModal')">Update PIN</div>
+          <div class="dropdown-item" style="color:var(--red);" onclick="window.location.href='index.html'">Logout</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Summary Cards -->
+    <section class="summary-cards">
+      <div class="card fade-in" style="animation-delay: 0.1s;">
+        <p class="text-secondary">Total Balance</p>
+        <h2 class="balance-amount" id="balance-display" data-target="0.00">₹0.00</h2>
+        <span class="badge badge-outline">Savings Account</span>
+      </div>
+      
+      <div class="card fade-in" style="animation-delay: 0.2s;">
+        <h2 style="margin: 0.5rem 0;" id="last-transaction-amt">None</h2>
+        <p class="text-secondary" id="last-transaction-desc"><span style="color: var(--text-secondary);">No recent activity</span></p>
+      </div>
+
+      <div class="card fade-in" style="animation-delay: 0.3s; cursor: pointer;" onclick="openModal('loanContactModal')" title="View Loan Details">
+        <p class="text-secondary">Loan Status</p>
+        <h2 style="margin: 0.5rem 0;">Pre-Approved</h2>
+        <span class="badge badge-eligible">Eligible up to ₹50k</span>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+      <a href="#" class="card action-card fade-in" style="animation-delay: 0.4s;" onclick="openModal('depositModal'); return false;">
+        <!-- Deposit Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <h4>Deposit</h4>
+      </a>
+      <a href="#" class="card action-card fade-in" style="animation-delay: 0.5s;" onclick="openModal('withdrawModal'); return false;">
+        <!-- Withdraw Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm-1 5h2v6l5.25 3.15-.75 1.23-6-3.56v-6.82z"/></svg>
+        <h4>Withdraw</h4>
+      </a>
+      <a href="transfer.html" class="card action-card fade-in" style="animation-delay: 0.6s;">
+        <!-- Transfer Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/></svg>
+        <h4>Transfer</h4>
+      </a>
+      <a href="#" class="card action-card fade-in" style="animation-delay: 0.7s;" onclick="generatePDF(); return false;">
+        <!-- View Statement Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <h4>Statement</h4>
+      </a>
+    </section>
+
+    <!-- Recent Transactions -->
+    <section class="transactions-section fade-in" style="animation-delay: 0.8s;">
+      <h3 class="mb-3">Recent Transactions</h3>
+      <table class="transactions-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance After</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="transactionList">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('depositModal')">&times;</button>
+      <h3 class="mb-3">Deposit Funds</h3>
+      <form id="depositForm" onsubmit="handleDeposit(event)">
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="depositAmount" class="form-control" placeholder="100.00" min="1" step="0.01" required>
+        </div>
+        <div class="form-group mb-4">
+          <label>Mode</label>
+          <select id="depositMode" class="form-control" onchange="toggleUPIField()" required>
+            <option value="Cash/Bank">Standard Bank Transfer / Cash</option>
+            <option value="UPI">UPI</option>
+          </select>
+        </div>
+        <div class="form-group mb-4" id="upiField" style="display: none;">
+          <label>UPI ID</label>
+          <input type="text" id="upiId" class="form-control" placeholder="example@upi">
+        </div>
+        <div class="form-group mb-4">
+          <label>Enter 4-Digit PIN to Confirm</label>
+          <input type="password" id="depositPin" class="form-control" placeholder="••••" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn-primary">Deposit Now</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('withdrawModal')">&times;</button>
+      <h3 class="mb-3">Withdraw Funds</h3>
+      <form id="withdrawForm" onsubmit="handleWithdraw(event)">
+        <div class="form-group mb-4">
+          <label>Amount (₹)</label>
+          <input type="number" id="withdrawAmount" class="form-control" placeholder="100.00" min="1" step="0.01" required>
+        </div>
+        <div class="form-group mb-4">
+          <label>Enter 4-Digit PIN to Confirm</label>
+          <input type="password" id="withdrawPin" class="form-control" placeholder="••••" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn-primary">Withdraw Now</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Update PIN Modal -->
+  <div class="modal" id="updatePinModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('updatePinModal')">&times;</button>
+      <h3 class="mb-3">Update Account PIN</h3>
+      <form id="updatePinForm" onsubmit="handleUpdatePin(event)">
+        <div class="form-group mb-4">
+          <label>Current PIN</label>
+          <input type="password" id="currentPin" class="form-control" placeholder="••••" maxlength="4" required>
+        </div>
+        <div class="form-group mb-3">
+          <label>New 4-Digit PIN</label>
+          <input type="password" id="newPin" class="form-control" placeholder="••••" maxlength="4" pattern="\d{4}" required>
+        </div>
+        <div class="form-group mb-4">
+          <label>Confirm New PIN</label>
+          <input type="password" id="confirmNewPin" class="form-control" placeholder="••••" maxlength="4" pattern="\d{4}" required>
+        </div>
+        <button type="submit" class="btn-primary">Update Secure PIN</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loan Contact Modal -->
+  <div class="modal" id="loanContactModal">
+    <div class="modal-content text-center">
+      <button class="close-btn" onclick="closeModal('loanContactModal')">&times;</button>
+      <h3 class="mb-3">Loan Processing</h3>
+      <div style="padding: 1.5rem; background: rgba(201, 168, 76, 0.05); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; margin-bottom: 1.5rem;">
+        <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">To proceed with your pre-approved loan, please contact a BWU-BANK loan specialist directly. Keep your Account Number ready for swift processing.</p>
+        <h4 style="color: var(--accent); margin-bottom: 1rem;">Bank Contact Details</h4>
+        <p style="margin-bottom: 0.8rem; font-size: 1.1rem;"><strong>📞 Toll Free:</strong> 1800-258-4455</p>
+        <p style="margin-bottom: 0.8rem; font-size: 1.1rem;"><strong>✉️ Email:</strong> loans@bwubank.com</p>
+        <p style="font-size: 1.1rem;"><strong>🏢 Branch:</strong> Barasat, West Bengal</p>
+      </div>
+      <button class="btn-primary" onclick="closeModal('loanContactModal')">Got It</button>
+    </div>
+  </div>
+
+  <script src="js/animations.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

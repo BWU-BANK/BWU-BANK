@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Account - BWU-BANK</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <style>
+    .page-container {
+      max-width: 700px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+    
+    .header-nav { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;}
+    .back-btn { font-size: 1.5rem; cursor: pointer; transition: color 0.2s; color: var(--text-secondary);}
+    .back-btn:hover { color: var(--accent); }
+
+    /* Step Indicator CSS-Only Progress Bar */
+    .steps-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .steps-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    /* Dynamic progress line */
+    .progress-line {
+      position: absolute;
+      top: 50%; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 2;
+      transform: translateY(-50%);
+      transition: width 0.3s ease;
+      width: 0%; /* Default 0. Update via style inline or JS based on step */
+    }
+    .step-item {
+      position: relative;
+      z-index: 3;
+      background: var(--bg-primary);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.875rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+    .step-item.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+    .step-item.completed {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Step Sections */
+    .step-section {
+      display: none;
+      animation: fadeInUp 0.3s ease forwards;
+    }
+    .step-section.active {
+      display: block;
+    }
+
+    .card-radio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-radio {
+      position: relative;
+      cursor: pointer;
+    }
+    .card-radio input {
+      position: absolute; opacity: 0; cursor: pointer;
+    }
+    .card-radio-content {
+      border: var(--border-card);
+      border-radius: var(--radius-btn);
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      background: rgba(0,0,0,0.2);
+    }
+    .card-radio input:checked ~ .card-radio-content {
+      border-color: var(--accent);
+      background: rgba(201, 168, 76, 0.1);
+    }
+    .card-radio input:checked ~ .card-radio-content h4 {
+      color: var(--accent);
+    }
+
+    /* Actions */
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-left-color: #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="page-container fade-in">
+    <div class="header-nav">
+      <a href="index.html" class="back-btn">←</a>
+      <h2>Open New Account</h2>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="steps-wrapper">
+      <div class="progress-line" id="progressLine" style="width: 0%;"></div>
+      <div class="step-item active" id="indicator1">1</div>
+      <div class="step-item" id="indicator2">2</div>
+      <div class="step-item" id="indicator3">3</div>
+    </div>
+
+    <div class="card">
+      <form id="multiStepForm">
+        
+        <!-- STEP 1: Personal Info -->
+        <div class="step-section active" id="step1">
+          <h3 class="mb-3">Personal Information</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="fullName" class="form-control" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label>Set 4-Digit PIN</label>
+              <input type="password" id="setPin" class="form-control" placeholder="••••" maxlength="4" pattern="\d{4}" title="Please enter exactly 4 digits" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Date of Birth</label>
+              <input type="date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>PAN Card Number</label>
+              <input type="text" class="form-control" placeholder="ABCDE1234F" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" class="form-control" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Account Type -->
+        <div class="step-section" id="step2">
+          <h3 class="mb-3">Select Account Type</h3>
+          <div class="card-radio-grid">
+            <label class="card-radio">
+              <input type="radio" name="accType" value="Savings" checked>
+              <div class="card-radio-content">
+                <h4 class="mb-1">Savings</h4>
+                <p class="text-secondary" style="font-size: 0.8rem;">Earn 4% interest pa.</p>
+              </div>
+            </label>
+            <label class="card-radio">
+              <input type="radio" name="accType" value="Current">
+              <div class="card-radio-content">
+                <h4 class="mb-1">Current</h4>
+                <p class="text-secondary" style="font-size: 0.8rem;">₹1000 Overdraft limit.</p>
+              </div>
+            </label>
+            <label class="card-radio">
+              <input type="radio" name="accType" value="Fixed Deposit">
+              <div class="card-radio-content">
+                <h4 class="mb-1">Fixed Deposit</h4>
+                <p class="text-secondary" style="font-size: 0.8rem;">Locked for 12 months.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- STEP 3: Initial Deposit & Review -->
+        <div class="step-section" id="step3">
+          <h3 class="mb-3">Initial Deposit</h3>
+          <p class="text-secondary mb-3">Please specify an initial deposit to activate your account.</p>
+          <div class="form-group mb-4">
+            <label>Amount (₹)</label>
+            <input type="number" id="initialDeposit" class="form-control" placeholder="500.00" min="100" required>
+          </div>
+        </div>
+
+        <!-- General Actions -->
+        <div class="step-actions">
+          <button type="button" class="btn-outline" id="btnPrev" style="visibility: hidden;">Back</button>
+          <button type="button" class="btn-primary" id="btnNext" style="width: auto; min-width: 120px;">
+            <span id="btnText">Next Step</span>
+            <div class="spinner" id="btnSpinner"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentStep = 1;
+      const totalSteps = 3;
+      
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      const steps = [step1, step2, step3];
+
+      const ind1 = document.getElementById('indicator1');
+      const ind2 = document.getElementById('indicator2');
+      const ind3 = document.getElementById('indicator3');
+      const indicators = [ind1, ind2, ind3];
+      const progressLine = document.getElementById('progressLine');
+
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      function updateUI() {
+        // Sections
+        steps.forEach((step, index) => {
+          step.classList.toggle('active', index === currentStep - 1);
+        });
+
+        // Indicators
+        indicators.forEach((ind, index) => {
+          ind.classList.remove('active', 'completed');
+          if (index < currentStep - 1) {
+            ind.classList.add('completed');
+          } else if (index === currentStep - 1) {
+            ind.classList.add('active');
+          }
+        });
+
+        // Progress line (0%, 50%, 100%)
+        progressLine.style.width = ((currentStep - 1) / (totalSteps - 1)) * 100 + '%';
+
+        // Buttons
+        btnPrev.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+        
+        if (currentStep === totalSteps) {
+          btnText.textContent = 'Submit Application';
+        } else {
+          btnText.textContent = 'Next Step';
+        }
+      }
+
+      btnNext.addEventListener('click', () => {
+        if (currentStep < totalSteps) {
+          // basic validation placeholder
+          currentStep++;
+          updateUI();
+        } else {
+          // Submit
+          btnText.style.display = 'none';
+          btnSpinner.style.display = 'block';
+          btnNext.disabled = true;
+
+          // Capture User Profile
+          const fullName = document.getElementById('fullName').value || 'John Doe';
+          const pinCode = document.getElementById('setPin').value || '1234';
+          
+          // Generate 12 Digit Account Number
+          const randomAcc = Math.floor(100000000000 + Math.random() * 900000000000);
+          const fullAccString = randomAcc.toString();
+
+          const bankUser = {
+              name: fullName,
+              pin: pinCode,
+              accountNumber: fullAccString
+          };
+          localStorage.setItem('bankUser', JSON.stringify(bankUser));
+
+          // Save deposit to localStorage
+          const depositInput = document.getElementById('initialDeposit');
+          const amount = depositInput ? parseFloat(depositInput.value) : 500;
+          
+          localStorage.setItem('bankBalance', amount);
+          
+          let transactions = [];
+          if(amount > 0) {
+              transactions.push({
+                  date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                  type: 'Deposit',
+                  amount: `+₹${amount.toFixed(2)}`,
+                  balance: `₹${amount.toFixed(2)}`,
+                  note: 'Initial Deposit',
+                  cssClass: 'row-deposit',
+                  amtColor: 'var(--green)'
+              });
+          }
+          localStorage.setItem('bankTransactions', JSON.stringify(transactions));
+
+          // Simulate processing and alert user
+          setTimeout(() => {
+            alert(`Registration Successful!\n\nYour new Account Number is: ${fullAccString}\nPlease save this and your 4-Digit PIN to login.`);
+            window.location.href = 'index.html';
+          }, 1500);
+        }
+      });
+
+      btnPrev.addEventListener('click', () => {
+        if (currentStep > 1) {
+          currentStep--;
+          updateUI();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+/* Dashboard Specific Layout */
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-section svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--accent);
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: var(--font-heading);
+}
+
+/* Base Grids */
+.summary-cards, .quick-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Breakpoints Configuration given in specs */
+@media (min-width: 768px) {
+  .summary-cards { 
+    grid-template-columns: repeat(3, 1fr); 
+  }
+  .quick-actions { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+@media (min-width: 1024px) {
+  .quick-actions { 
+    grid-template-columns: repeat(4, 1fr); 
+  }
+}
+
+/* Summary Cards specific styles */
+.balance-amount {
+  font-size: 2.5rem;
+  color: var(--accent);
+  font-family: var(--font-heading);
+  margin: 0.5rem 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge-outline {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.badge-eligible {
+  background-color: var(--green);
+  color: #fff;
+}
+
+.badge-applied {
+  background-color: var(--accent);
+  color: #000;
+}
+
+.badge-not-eligible {
+  background-color: var(--text-secondary);
+  color: #fff;
+}
+
+/* Quick Actions Cards */
+.action-card {
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.action-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.15);
+}
+
+.action-card svg {
+  width: 48px;
+  height: 48px;
+  fill: var(--accent);
+  margin-bottom: 1rem;
+}
+
+/* Transactions Table */
+.transactions-section {
+  background: var(--bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.transactions-table th {
+  text-align: left;
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.transactions-table td {
+  padding: 1rem;
+  background-color: rgba(255,255,255,0.02);
+}
+
+.transactions-table tr td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-left: 4px solid transparent;
+}
+
+.transactions-table tr td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Row Accents */
+.row-deposit td:first-child { border-left-color: var(--green); }
+.row-withdrawal td:first-child { border-left-color: var(--red); }
+.row-transfer td:first-child { border-left-color: var(--blue); }
+
+/* Table Row Animations */
+.transactions-table tbody tr {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.user-section {
+  position: relative;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-btn);
+  transition: background 0.2s;
+}
+
+.user-section:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: var(--bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  min-width: 200px;
+  display: none; /* hidden by default */
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.user-dropdown-menu.show {
+  display: flex;
+  animation: fadeInUp 0.2s ease forwards;
+}
+
+.dropdown-item {
+  padding: 1rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+}
+

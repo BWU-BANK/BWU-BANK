@@ -1,0 +1,19 @@
+/* Custom CSS Properties for Premium Dark Banking Dashboard */
+:root {
+  --bg-primary: #0A1628;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --accent: #C9A84C;
+  --accent-hover: #D4B76A;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --border-card: 1px solid rgba(255, 255, 255, 0.08);
+  --radius-card: 16px;
+  --radius-btn: 8px;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --green: #22C55E;
+  --red: #EF4444;
+  --blue: #3B82F6;
+  
+  --font-body: 'DM Sans', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+}

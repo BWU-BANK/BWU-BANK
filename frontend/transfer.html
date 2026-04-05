@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transfer Funds - BWU-BANK</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <style>
+    .page-container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      width: 90%;
+      max-width: 400px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Success state */
+    .success-icon {
+      color: var(--green);
+      margin-bottom: 1rem;
+      transform: scale(0);
+    }
+    
+    .success-active .success-icon {
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    @keyframes popIn {
+      to { transform: scale(1); }
+    }
+    
+    .header-nav { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;}
+    .back-btn { font-size: 1.5rem; cursor: pointer; transition: color 0.2s; color: var(--text-secondary);}
+    .back-btn:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="page-container fade-in">
+    <div class="header-nav">
+      <a href="dashboard.html" class="back-btn">←</a>
+      <h2>Transfer Funds</h2>
+    </div>
+
+    <div class="card">
+      <form id="transferForm">
+        <div class="form-group">
+          <label>From Account</label>
+          <input type="text" class="form-control" value="ACC12345678 (Savings)" readonly style="color: var(--text-secondary); cursor: not-allowed;">
+        </div>
+
+        <div class="form-group">
+          <label for="targetAccount">To Account Number</label>
+          <input type="text" id="targetAccount" class="form-control" placeholder="e.g. ACC98765432" required>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount (₹)</label>
+          <input type="number" id="amount" class="form-control" placeholder="0.00" min="0.01" step="0.01" required>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="note">Note (Optional)</label>
+          <input type="text" id="note" class="form-control" placeholder="What is this for?">
+        </div>
+
+        <button type="button" class="btn-primary" id="btnReview">Review Transfer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="card modal-content text-center">
+      <h3>Confirm Transfer</h3>
+      <div id="modalSummary" class="mb-3 mt-3 text-secondary" style="font-size: 1.1rem; line-height: 1.6;">
+        <!-- Filled by JS -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn-outline" style="flex:1;" id="btnCancel">Cancel</button>
+        <button class="btn-primary" style="flex:1;" id="btnConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="card modal-content text-center success-active">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h3>Transfer Successful!</h3>
+      <p class="text-secondary mt-1 mb-3">Your funds have been transferred securely.</p>
+      <a href="dashboard.html" class="btn-primary" style="display: block; text-align: center;">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script src="js/animations.js"></script>
+  <script src="js/transfer.js"></script>
+</body>
+</html>
