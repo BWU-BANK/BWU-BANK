@@ -5,11 +5,23 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class DatabaseManager {
     // Supabase PostgreSQL JDBC Connection Strings
-    private static final String URL = "jdbc:postgresql://db.fpyjagnxcqqjxacbczpa.supabase.co:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PWD = "CHUTIYA@2026";
+    // Load from .env file or fallback to OS environment variables
+    private static String getEnvConfig(String key) {
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+        String val = dotenv.get(key);
+        if (val == null || val.isEmpty()) {
+            val = System.getenv(key);
+        }
+        return val;
+    }
+
+    private static final String URL = getEnvConfig("SUPABASE_DB_URL");
+    private static final String USER = getEnvConfig("SUPABASE_DB_USER");
+    private static final String PWD = getEnvConfig("SUPABASE_DB_PASSWORD");
 
     private static Connection connection = null;
 

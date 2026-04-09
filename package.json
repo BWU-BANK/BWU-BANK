@@ -1,0 +1,11 @@
+{
+  "name": "banking-simulation",
+  "version": "1.0.0",
+  "description": "Static frontend for Banking Simulation",
+  "scripts": {
+    "start": "serve frontend -p 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
